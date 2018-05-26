@@ -55,12 +55,13 @@ RUN apk add --no-cache --virtual .build-modsecurity \
     && apk add $deps \
     && apk del .build-modsecurity
 
+ARG OWASP_MODSEC_VERSION=3.0.2
 ARG OWASP_MODSEC_MD5=9cef8c63937a92dc350275fcf348baab
 
 RUN mkdir -p /etc/modsecurity/owasp-modsecurity-crs \
     && wget -qO/etc/modsecurity/modsecurity.conf https://github.com/SpiderLabs/ModSecurity/raw/v2/master/modsecurity.conf-recommended \
     && wget -qO/etc/modsecurity/unicode.mapping https://github.com/SpiderLabs/ModSecurity/raw/v2/master/unicode.mapping \
-    && wget -qO/tmp/owasp.tar.gz https://github.com/SpiderLabs/owasp-modsecurity-crs/archive/v3.0.2.tar.gz \
+    && wget -qO/tmp/owasp.tar.gz https://github.com/SpiderLabs/owasp-modsecurity-crs/archive/v${OWASP_MODSEC_VERSION}.tar.gz \
     && echo "$OWASP_MODSEC_MD5  /tmp/owasp.tar.gz" | md5sum -c \
     && tar xzf /tmp/owasp.tar.gz --strip-components=1 -C /etc/modsecurity/owasp-modsecurity-crs \
     && rm /tmp/owasp.tar.gz \
