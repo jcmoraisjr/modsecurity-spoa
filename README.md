@@ -6,7 +6,7 @@ for [ModSecurity](http://www.modsecurity.org) web application firewall
 
 [![Docker Repository on Quay](https://quay.io/repository/jcmoraisjr/modsecurity-spoa/status "Docker Repository on Quay")](https://quay.io/repository/jcmoraisjr/modsecurity-spoa)
 
-# Configuration
+## Agent configuration
 
 Command line syntax:
 
@@ -38,4 +38,41 @@ Options are: (from modsecurity agent -h)
                            by a unit (us, ms, s)
 
     Supported capabilities: fragmentation, pipelining, async
+```
+
+## HAProxy configuration
+
+Configure modsecurity-spoa as a HAProxy SPOE agent. See also SPOE filter
+[doc](http://cbonte.github.io/haproxy-dconv/1.8/configuration.html#9.3)
+and SPOE [spec](https://www.haproxy.org/download/1.8/doc/SPOE.txt).
+
+Changes to `haproxy.cfg` - change `127.0.0.1:12345` below to the
+modsecurity-spoa endpoint:
+
+```
+    frontend httpfront
+        mode http
+        ...
+        filter spoe engine modsecurity config /etc/haproxy/spoe-modsecurity.conf
+        http-request deny if { var(txn.modsec.code) -m int gt 0 }
+        ...
+    backend spoe-modsecurity
+        mode tcp
+        server modsec-spoa1 127.0.0.1:12345
+```
+
+Create a `/etc/haproxy/spoe-modsecurity.conf`:
+
+```
+    [modsecurity]
+    spoe-agent modsecurity-agent
+        messages     check-request
+        option       var-prefix  modsec
+        timeout      hello       100ms
+        timeout      idle        30s
+        timeout      processing  1s
+        use-backend  spoe-modsecurity
+    spoe-message check-request
+        args   unique-id method path query req.ver req.hdrs_bin req.body_size req.body
+        event  on-frontend-http-request
 ```
