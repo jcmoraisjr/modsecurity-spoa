@@ -20,7 +20,9 @@ will be used, included in the same order as they have been declared. If no confi
 declared, the following will be used:
 
 * `/etc/modsecurity/modsecurity.conf`: ModSecurity recommended config, from ModSecurity [repository](https://github.com/SpiderLabs/ModSecurity/tree/v2/master)
+    * Changes: `SecRuleEngine`, changed from `DetectionOnly` to `On`
 * `/etc/modsecurity/owasp-modsecurity-crs.conf`: Generic attack detection rules for ModSecurity, from OWASP ModSecurity CRS [repository](https://github.com/SpiderLabs/owasp-modsecurity-crs)
+    * Changes: `SecDefaultAction`, `phase:1` and `phase:2`, changed from `log,auditlog,pass` to `log,noauditlog,deny,status:403`
 
 Options are: (from modsecurity agent -h)
 

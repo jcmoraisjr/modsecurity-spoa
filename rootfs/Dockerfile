@@ -69,6 +69,12 @@ RUN mkdir -p /etc/modsecurity/owasp-modsecurity-crs \
             /etc/modsecurity/owasp-modsecurity-crs \
             -type f -name '*.example' \
         | while read -r f; do cp -p "$f" "${f%.example}"; done \
+    && sed -i.example \
+        's/^SecRuleEngine .*/SecRuleEngine On/' \
+        /etc/modsecurity/modsecurity.conf \
+    && sed -i.example \
+        's/^\(SecDefaultAction "phase:[12]\),log,auditlog,pass"/\1,log,noauditlog,deny,status:403"/' \
+        /etc/modsecurity/owasp-modsecurity-crs/crs-setup.conf \
     && find \
             /etc/modsecurity/owasp-modsecurity-crs \
             -type f -maxdepth 1 -name '*.conf' \
