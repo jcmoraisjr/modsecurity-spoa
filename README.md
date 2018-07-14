@@ -6,6 +6,12 @@ for [ModSecurity](http://www.modsecurity.org) web application firewall
 
 [![Docker Repository on Quay](https://quay.io/repository/jcmoraisjr/modsecurity-spoa/status "Docker Repository on Quay")](https://quay.io/repository/jcmoraisjr/modsecurity-spoa)
 
+## SPOP and HAProxy version
+
+The current [SPOP](https://www.haproxy.org/download/1.8/doc/SPOE.txt) version is v2, used since modsecurity-spoa v0.4. This agent version works on HAProxy 1.8.10 and newer.
+
+SPOP v1 is used on modsecurity-spoa v0.1 to v0.3. This agent version works on HAProxy up to 1.8.9.
+
 ## Agent configuration
 
 Command line syntax:
