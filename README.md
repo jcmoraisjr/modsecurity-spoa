@@ -17,7 +17,7 @@ SPOP v1 is used on modsecurity-spoa v0.1 to v0.3. This agent version works on HA
 Command line syntax:
 
 ```
-$ docker run quay.io/jcmoraisjr/modsecurity-spoa [options] [-- <config-file1> [<config-file2> ...] ]
+$ docker run -p 12345:12345 quay.io/jcmoraisjr/modsecurity-spoa [options] [-- <config-file1> [<config-file2> ...] ]
 ```
 
 `config-files` can be used either after `--` (see above) or from `-f` option (see below).
