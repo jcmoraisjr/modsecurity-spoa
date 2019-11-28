@@ -1,0 +1,53 @@
+---
+version: '3.6'
+services:
+
+  modsecurity-spoa:
+    hostname: modsec
+    build:
+      context: ../rootfs
+      dockerfile: Dockerfile
+    image: modsecurity-spoa-test
+    networks:
+      - modsec
+
+  haproxy:
+    hostname: haproxy
+    image: haproxy:1.8.22
+    volumes:
+      - ./haproxy.cfg://usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./spoe-modsecurity.conf:/etc/haproxy/spoe-modsecurity.conf:ro
+    networks:
+      - modsec
+      - echoserver
+      - client
+    depends_on:
+      - modsecurity-spoa
+      - echoserver
+
+  echoserver:
+    hostname: echoserver
+    image: gcr.io/google_containers/echoserver:1.3
+    networks:
+      - echoserver
+
+  client:
+    hostname: echoserver
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: curl-test
+    # Split parameters with ','
+    command: >
+      haproxy:8080,
+      haproxy:8080?p=/etc/passwd,
+      -X POST haproxy:8080
+    networks:
+      - client
+    depends_on:
+      - haproxy
+
+networks:
+  modsec:
+  echoserver:
+  client:

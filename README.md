@@ -84,3 +84,9 @@ Create a `/etc/haproxy/spoe-modsecurity.conf`:
         args   unique-id method path query req.ver req.hdrs_bin req.body_size req.body
         event  on-frontend-http-request
 ```
+
+## Test with docker
+
+```
+(cd ./test && ./run.sh)
+```
