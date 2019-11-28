@@ -1,10 +1,10 @@
-FROM alpine:3.7
+FROM alpine:3.10
 
-ARG HAPROXY_MAJOR=1.8
-ARG HAPROXY_VERSION=1.8.12
-ARG HAPROXY_MD5=9f37013ec1e76942a67a9f7c067af9f2
-ARG MODSEC_VERSION=2.9.2
-ARG MODSEC_MD5=4d9454efb19269c4288ae408ea438b76
+ARG HAPROXY_MAJOR=2.0
+ARG HAPROXY_VERSION=2.0.10
+ARG HAPROXY_MD5=501f490f0fb6c01099686d2f0e02f644
+ARG MODSEC_VERSION=2.9.3
+ARG MODSEC_MD5=215a96d679a5b0fadcf13b5d09b35422
 
 RUN apk add --no-cache --virtual .build-modsecurity \
         curl \
@@ -56,8 +56,8 @@ RUN apk add --no-cache --virtual .build-modsecurity \
     && apk add $deps \
     && apk del .build-modsecurity
 
-ARG OWASP_MODSEC_VERSION=v3.0.2
-ARG OWASP_MODSEC_MD5=9cef8c63937a92dc350275fcf348baab
+ARG OWASP_MODSEC_VERSION=v3.2.0
+ARG OWASP_MODSEC_MD5=9dd31ff7e74bd797d2013b93c02df304
 
 RUN mkdir -p /etc/modsecurity/owasp-modsecurity-crs \
     && wget -qO/etc/modsecurity/modsecurity.conf https://github.com/SpiderLabs/ModSecurity/raw/v2/master/modsecurity.conf-recommended \
