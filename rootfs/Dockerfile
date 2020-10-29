@@ -1,8 +1,8 @@
 FROM alpine:3.10
 
-ARG HAPROXY_MAJOR=2.0
-ARG HAPROXY_VERSION=2.0.10
-ARG HAPROXY_MD5=501f490f0fb6c01099686d2f0e02f644
+ARG HAPROXY_MAJOR=2.2
+ARG HAPROXY_VERSION=2.2.4
+ARG HAPROXY_MD5=c2717fcff503ef8574cd6395e2ca4d24
 ARG MODSEC_VERSION=2.9.3
 ARG MODSEC_MD5=215a96d679a5b0fadcf13b5d09b35422
 
@@ -56,13 +56,13 @@ RUN apk add --no-cache --virtual .build-modsecurity \
     && apk add $deps \
     && apk del .build-modsecurity
 
-ARG OWASP_MODSEC_VERSION=v3.2.0
-ARG OWASP_MODSEC_MD5=9dd31ff7e74bd797d2013b93c02df304
+ARG OWASP_MODSEC_VERSION=v3.3.0
+ARG OWASP_MODSEC_MD5=491b37397e42e6c549bf19e6e49a7dbd
 
 RUN mkdir -p /etc/modsecurity/owasp-modsecurity-crs \
     && wget -qO/etc/modsecurity/modsecurity.conf https://github.com/SpiderLabs/ModSecurity/raw/v2/master/modsecurity.conf-recommended \
     && wget -qO/etc/modsecurity/unicode.mapping https://github.com/SpiderLabs/ModSecurity/raw/v2/master/unicode.mapping \
-    && wget -qO/tmp/owasp.tar.gz https://github.com/SpiderLabs/owasp-modsecurity-crs/archive/${OWASP_MODSEC_VERSION}.tar.gz \
+    && wget -qO/tmp/owasp.tar.gz https://github.com/coreruleset/coreruleset/archive/${OWASP_MODSEC_VERSION}.tar.gz \
     && echo "$OWASP_MODSEC_MD5  /tmp/owasp.tar.gz" | md5sum -c \
     && tar xzf /tmp/owasp.tar.gz --strip-components=1 -C /etc/modsecurity/owasp-modsecurity-crs \
     && rm /tmp/owasp.tar.gz \
