@@ -13,9 +13,9 @@ services:
 
   haproxy:
     hostname: haproxy
-    image: haproxy:1.8.22
+    image: haproxy:2.2.4-alpine
     volumes:
-      - ./haproxy.cfg://usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
       - ./spoe-modsecurity.conf:/etc/haproxy/spoe-modsecurity.conf:ro
     networks:
       - modsec
