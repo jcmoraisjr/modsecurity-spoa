@@ -16,6 +16,24 @@ function log_entry() {
 
 }
 
+# ci_log_group_* functions are used to make Github Actions output cleaner
+function ci_log_group_start(){
+    local LOG_TYPE="${1:?Needs log type}"
+    local LOG_MSG="${2:?Needs log message}"
+
+    if [ -n "${CI:-}" ]; then
+        echo "::group::${LOG_MSG}"
+    else
+        ci_log_entry "${LOG_TYPE}" "${LOG_MSG}"
+    fi
+}
+
+function ci_log_group_end {
+    if [ -n "${CI:-}" ]; then
+        echo "::endgroup::"
+    fi
+}
+
 function containers_down {
 
     log_entry "INFO" "Terminating containers"
@@ -29,14 +47,18 @@ trap containers_down EXIT SIGHUP SIGINT SIGTERM
 
 # Run
 
-log_entry "INFO" "Build containers"
+ci_log_group_start "INFO" "Build containers"
 docker-compose -p "$PROJECT_NAME" build
+ci_log_group_end
 
-log_entry "INFO" "Starting containers"
+ci_log_group_start "INFO" "Starting containers"
 docker-compose -p "$PROJECT_NAME" up --force-recreate --detach haproxy
+ci_log_group_end
 
-log_entry "INFO" "Running tests"
+ci_log_group_start "INFO" "Running tests"
 docker-compose -p "$PROJECT_NAME" run client
+ci_log_group_end
 
-log_entry "INFO" "Showing logs"
+ci_log_group_start "INFO" "Showing logs"
 docker-compose -p "$PROJECT_NAME" logs modsecurity-spoa | grep -v "clients connected"
+ci_log_group_end
