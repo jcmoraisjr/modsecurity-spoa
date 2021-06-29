@@ -29,6 +29,9 @@ trap containers_down EXIT SIGHUP SIGINT SIGTERM
 
 # Run
 
+log_entry "INFO" "Build containers"
+docker-compose -p "$PROJECT_NAME" build
+
 log_entry "INFO" "Starting containers"
 docker-compose -p "$PROJECT_NAME" up --force-recreate --detach haproxy
 
