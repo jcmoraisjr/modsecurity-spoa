@@ -1,0 +1,21 @@
+# https://dependabot.com/docs/config-file-beta/validator/
+---
+version: 2
+updates:
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+
+  # find * -iname dockerfile* -exec dirname {} \; | sort -u | uniq
+
+  - package-ecosystem: "docker"
+    directory: "rootfs"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "docker"
+    directory: "test"
+    schedule:
+      interval: "monthly"
