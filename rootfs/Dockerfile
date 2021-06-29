@@ -3,8 +3,8 @@ FROM alpine:3.12
 ARG HAPROXY_MAJOR=2.2
 ARG HAPROXY_VERSION=2.2.4
 ARG HAPROXY_MD5=c2717fcff503ef8574cd6395e2ca4d24
-ARG MODSEC_VERSION=2.9.3
-ARG MODSEC_MD5=215a96d679a5b0fadcf13b5d09b35422
+ARG MODSEC_VERSION=2.9.4
+ARG MODSEC_MD5=6371720c43ce804e1d00dfbd1442aa48
 
 RUN apk add --no-cache --virtual .build-modsecurity \
         curl \
@@ -20,7 +20,7 @@ RUN apk add --no-cache --virtual .build-modsecurity \
         libevent-dev \
         curl-dev \
         yajl-dev\
-    && curl -fsSLo /tmp/modsecurity.tar.gz https://www.modsecurity.org/tarball/${MODSEC_VERSION}/modsecurity-${MODSEC_VERSION}.tar.gz \
+    && curl -fsSLo /tmp/modsecurity.tar.gz https://github.com/SpiderLabs/ModSecurity/releases/download/v${MODSEC_VERSION}/modsecurity-${MODSEC_VERSION}.tar.gz \
     && curl -fsSLo /tmp/haproxy.tar.gz https://www.haproxy.org/download/${HAPROXY_MAJOR}/src/haproxy-${HAPROXY_VERSION}.tar.gz \
     && echo "$MODSEC_MD5  /tmp/modsecurity.tar.gz" | md5sum -c \
     && mkdir -p /usr/src/modsecurity \
