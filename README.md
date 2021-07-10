@@ -6,13 +6,13 @@ for [ModSecurity](http://www.modsecurity.org) web application firewall
 
 [![Docker Repository on Quay](https://quay.io/repository/jcmoraisjr/modsecurity-spoa/status "Docker Repository on Quay")](https://quay.io/repository/jcmoraisjr/modsecurity-spoa)
 
-## SPOP and HAProxy version
+## SPOP and HAProxy Version
 
 The current [SPOP](https://www.haproxy.org/download/2.2/doc/SPOE.txt) version is v2, used since modsecurity-spoa v0.4. This agent version works on HAProxy 1.8.10 and newer.
 
 SPOP v1 is used on modsecurity-spoa v0.1 to v0.3. This agent version works on HAProxy up to 1.8.9.
 
-## Agent configuration
+## Agent Configuration
 
 Command line syntax:
 
@@ -22,8 +22,26 @@ $ docker run -p 12345:12345 quay.io/jcmoraisjr/modsecurity-spoa [options] [-- <c
 
 `config-files` can be used either after `--` (see above) or from `-f` option (see below).
 The only difference is that the later supports only one filename. All config-files found
-will be used, included in the same order as they have been declared. If no config-file is
-declared, the following will be used:
+will be used, included in the same order as they have been declared.
+
+### Default Configuration Files
+
+In order to contain the original rules that are included in the default setup, you should copy the following files from the running image:
+```
+docker run -p 12345:12345 quay.io/jcmoraisjr/modsecurity-spoa -n 1
+docker cp ${containerId}:/etc/modsecurity/modsecurity.conf ./
+docker cp ${containerId}:/etc/modsecurity/owasp-modsecurity-crs.conf ./
+```
+
+Use the copied files in your run command:
+```
+# download and configure conf files in rootfs directory (ex./ crs-setup.conf)
+docker run -p 12345:12345 -v $(pwd):/etc/modsecurity/ quay.io/jcmoraisjr/modsecurity-spoa -n 1 -- /etc/modsecurity/modsecurity.conf /etc/modsecurity/owasp-modsecurity-crs.conf /etc/modsecurity/crs-setup.conf
+```
+
+### Running without Config Files
+
+If no config-file is declared, the following will be used:
 
 * `/etc/modsecurity/modsecurity.conf`: ModSecurity recommended config, from ModSecurity [repository](https://github.com/SpiderLabs/ModSecurity/tree/v2/master)
     * Changes: `SecRuleEngine`, changed from `DetectionOnly` to `On`
