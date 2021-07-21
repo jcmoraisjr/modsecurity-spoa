@@ -22,13 +22,26 @@ $ docker run -p 12345:12345 quay.io/jcmoraisjr/modsecurity-spoa [options] [-- <c
 
 `config-files` can be used either after `--` (see above) or from `-f` option (see below).
 The only difference is that the later supports only one filename. All config-files found
-will be used, included in the same order as they have been declared. If no config-file is
-declared, the following will be used:
+will be used, included in the same order as they have been declared.
+
+If no config-file is declared, the following will be used:
 
 * `/etc/modsecurity/modsecurity.conf`: ModSecurity recommended config, from ModSecurity [repository](https://github.com/SpiderLabs/ModSecurity/tree/v2/master)
     * Changes: `SecRuleEngine`, changed from `DetectionOnly` to `On`
 * `/etc/modsecurity/owasp-modsecurity-crs.conf`: Generic attack detection rules for ModSecurity, from OWASP ModSecurity CRS [repository](https://github.com/SpiderLabs/owasp-modsecurity-crs)
     * Changes: `SecDefaultAction`, `phase:1` and `phase:2`, changed from `log,auditlog,pass` to `log,noauditlog,deny,status:403`
+
+Note that the files above will only be added by default if no other configuration file is
+assigned. Use the configuration below to customize ModSecurity and also preserv the default
+behavior:
+
+```
+$ docker run -p 12345:12345 -v $PWD:/var/run/modsecurity \
+  quay.io/jcmoraisjr/modsecurity-spoa \
+  -- /var/run/modsecurity/my-options.conf \
+     /etc/modsecurity/modsecurity.conf \
+     /etc/modsecurity/owasp-modsecurity-crs.conf
+```
 
 Options are: (from modsecurity agent -h)
 
