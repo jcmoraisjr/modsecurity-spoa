@@ -24,19 +24,20 @@ $ docker run -p 12345:12345 quay.io/jcmoraisjr/modsecurity-spoa [options] [-- <c
 The only difference is that the later supports only one filename. All config-files found
 will be used, included in the same order as they have been declared.
 
-### Default Configuration Files
+### Customize the Configuration Files
 
-In order to contain the original rules that are included in the default setup, you should copy the following files from the running image:
+In order to use the default configuration in your customization, you should copy the following files from the image:
 ```
-docker run -p 12345:12345 quay.io/jcmoraisjr/modsecurity-spoa -n 1
-docker cp ${containerId}:/etc/modsecurity/modsecurity.conf ./
-docker cp ${containerId}:/etc/modsecurity/owasp-modsecurity-crs.conf ./
+docker create --name modsec quay.io/jcmoraisjr/modsecurity-spoa
+docker cp modsec:/etc/modsecurity/modsecurity.conf .
+docker cp modsec:/etc/modsecurity/owasp-modsecurity-crs.conf .
+docker rm modsec
 ```
 
-Use the copied files in your run command:
+Download and customize the configuration files for either the [ModSecurity repository](https://github.com/SpiderLabs/ModSecurity/blob/v2/master/modsecurity.conf-recommended) or from [OWASP repository](https://github.com/SpiderLabs/owasp-modsecurity-crs/blob/v3.3/dev/crs-setup.conf.example).
+Use the copied files from the previous code section in your run command:
 ```
-# download and configure conf files in rootfs directory (ex./ crs-setup.conf)
-docker run -p 12345:12345 -v $(pwd):/etc/modsecurity/ quay.io/jcmoraisjr/modsecurity-spoa -n 1 -- /etc/modsecurity/modsecurity.conf /etc/modsecurity/owasp-modsecurity-crs.conf /etc/modsecurity/crs-setup.conf
+docker run -p 12345:12345 -v $(pwd):/root/ quay.io/jcmoraisjr/modsecurity-spoa -n 1 -- /root/modsecurity.conf /root/owasp-modsecurity-crs.conf /root/crs-setup.conf
 ```
 
 ### Running without Config Files
