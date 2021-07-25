@@ -29,15 +29,19 @@ will be used, included in the same order as they have been declared.
 In order to use the default configuration in your customization, you should copy the following files from the image:
 ```
 docker create --name modsec quay.io/jcmoraisjr/modsecurity-spoa
-docker cp modsec:/etc/modsecurity/modsecurity.conf .
-docker cp modsec:/etc/modsecurity/owasp-modsecurity-crs.conf .
+docker cp modsec:/etc/modsecurity .
 docker rm modsec
 ```
 
 Download and customize the configuration files for either the [ModSecurity repository](https://github.com/SpiderLabs/ModSecurity/blob/v2/master/modsecurity.conf-recommended) or from [OWASP repository](https://github.com/SpiderLabs/owasp-modsecurity-crs/blob/v3.3/dev/crs-setup.conf.example).
 Use the copied files from the previous code section in your run command:
 ```
-docker run -p 12345:12345 -v $(pwd):/root/ quay.io/jcmoraisjr/modsecurity-spoa -n 1 -- /root/modsecurity.conf /root/owasp-modsecurity-crs.conf /root/crs-setup.conf
+docker run -p 12345:12345 -v $PWD/modsecurity:/etc/modsecurity quay.io/jcmoraisjr/modsecurity-spoa -n 1
+```
+
+If you do not want to include the default configuration files and only use the configuration files (ex./ custom-config.conf) that you design, leave out the copied default configuration files from before in your run command:
+```
+docker run -p 12345:12345 -v $PWD:/etc/modsecurity/ quay.io/jcmoraisjr/modsecurity-spoa -n 1 -- /etc/modsecurity/custom-config.conf
 ```
 
 ### Running without Config Files
