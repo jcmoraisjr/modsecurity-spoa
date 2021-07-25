@@ -6,13 +6,13 @@ for [ModSecurity](http://www.modsecurity.org) web application firewall
 
 [![Docker Repository on Quay](https://quay.io/repository/jcmoraisjr/modsecurity-spoa/status "Docker Repository on Quay")](https://quay.io/repository/jcmoraisjr/modsecurity-spoa)
 
-## SPOP and HAProxy version
+## SPOP and HAProxy Version
 
 The current [SPOP](https://www.haproxy.org/download/2.2/doc/SPOE.txt) version is v2, used since modsecurity-spoa v0.4. This agent version works on HAProxy 1.8.10 and newer.
 
 SPOP v1 is used on modsecurity-spoa v0.1 to v0.3. This agent version works on HAProxy up to 1.8.9.
 
-## Agent configuration
+## Agent Configuration
 
 Command line syntax:
 
@@ -22,8 +22,31 @@ $ docker run -p 12345:12345 quay.io/jcmoraisjr/modsecurity-spoa [options] [-- <c
 
 `config-files` can be used either after `--` (see above) or from `-f` option (see below).
 The only difference is that the later supports only one filename. All config-files found
-will be used, included in the same order as they have been declared. If no config-file is
-declared, the following will be used:
+will be used, included in the same order as they have been declared.
+
+### Customize the Configuration Files
+
+In order to use the default configuration in your customization, you should copy the following files from the image:
+```
+docker create --name modsec quay.io/jcmoraisjr/modsecurity-spoa
+docker cp modsec:/etc/modsecurity .
+docker rm modsec
+```
+
+Download and customize the configuration files for either the [ModSecurity repository](https://github.com/SpiderLabs/ModSecurity/blob/v2/master/modsecurity.conf-recommended) or from [OWASP repository](https://github.com/SpiderLabs/owasp-modsecurity-crs/blob/v3.3/dev/crs-setup.conf.example).
+Use the copied files from the previous code section in your run command:
+```
+docker run -p 12345:12345 -v $PWD/modsecurity:/etc/modsecurity quay.io/jcmoraisjr/modsecurity-spoa -n 1
+```
+
+If you do not want to include the default configuration files and only use the configuration files (ex./ custom-config.conf) that you design, leave out the copied default configuration files from before in your run command:
+```
+docker run -p 12345:12345 -v $PWD/modsecurity:/etc/modsecurity quay.io/jcmoraisjr/modsecurity-spoa -n 1 -- /etc/modsecurity/custom-config.conf
+```
+
+### Running without Config Files
+
+If no config-file is declared, the following will be used:
 
 * `/etc/modsecurity/modsecurity.conf`: ModSecurity recommended config, from ModSecurity [repository](https://github.com/SpiderLabs/ModSecurity/tree/v2/master)
     * Changes: `SecRuleEngine`, changed from `DetectionOnly` to `On`
