@@ -41,7 +41,7 @@ docker run -p 12345:12345 -v $PWD/modsecurity:/etc/modsecurity quay.io/jcmoraisj
 
 If you do not want to include the default configuration files and only use the configuration files (ex./ custom-config.conf) that you design, leave out the copied default configuration files from before in your run command:
 ```
-docker run -p 12345:12345 -v $PWD:/etc/modsecurity/ quay.io/jcmoraisjr/modsecurity-spoa -n 1 -- /etc/modsecurity/custom-config.conf
+docker run -p 12345:12345 -v $PWD/modsecurity:/etc/modsecurity quay.io/jcmoraisjr/modsecurity-spoa -n 1 -- /etc/modsecurity/custom-config.conf
 ```
 
 ### Running without Config Files
