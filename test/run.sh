@@ -5,7 +5,7 @@ PROJECT_NAME="modsec"
 
 # Functions
 
-function log_entry() {
+function ci_log_entry() {
 
     local LOG_TYPE="${1:?Needs log type}"
     local LOG_MSG="${2:?Needs log message}"
@@ -36,14 +36,14 @@ function ci_log_group_end {
 
 function containers_down {
 
-    log_entry "INFO" "Terminating containers"
+    ci_log_entry "INFO" "Terminating containers"
     docker-compose -p "$PROJECT_NAME" down
 
 }
 
 # Always terminate containers
 
-trap containers_down EXIT SIGHUP SIGINT SIGTERM
+trap containers_down EXIT
 
 # Run
 
