@@ -5,9 +5,12 @@ ARG HAPROXY_MODSEC_MD5=1cc7bcb0e8b4d1d24e92dd941682e31d
 ARG MODSEC_VERSION=2.9.5
 ARG MODSEC_MD5=d13cf51673b25a10f7ba9969d9b48252
 
+ADD spoa-log.patch /
+
 RUN apk add --no-cache --virtual .build-modsecurity \
         curl \
         openssl \
+        patch \
         tar \
         make \
         gcc \
@@ -28,6 +31,7 @@ RUN apk add --no-cache --virtual .build-modsecurity \
     && echo "$HAPROXY_MODSEC_MD5  /tmp/haproxy-modsecurity.zip" | md5sum -c \
     && unzip -d /usr/src /tmp/haproxy-modsecurity.zip \
     && mv /usr/src/spoa-modsecurity-${HAPROXY_MODSEC_REF} /usr/src/haproxy-modsecurity \
+    && patch -p0 /usr/src/haproxy-modsecurity/spoa.c </spoa-log.patch \
     && rm /tmp/haproxy-modsecurity.zip \
     && cd /usr/src/modsecurity \
     && ./configure \
