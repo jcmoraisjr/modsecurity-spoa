@@ -42,7 +42,6 @@ RUN apk add --no-cache --virtual .build-modsecurity \
     && make -C standalone install \
     && mkdir -p INSTALL/include \
     && cp standalone/*.h apache2/*.h INSTALL/include \
-    && cd /usr/src/ \
     && mkdir -p /usr/src/haproxy/contrib/ \
     && git clone https://github.com/haproxy/spoa-modsecurity /usr/src/haproxy/contrib/modsecurity \ 
     && cd / \
