@@ -9,3 +9,41 @@
  }
  
  static void
+@@ -1441,7 +1441,7 @@
+ 	switch (client->state) {
+ 		case SPOA_ST_CONNECTING:
+ 			if (handle_hahello(frame) < 0) {
+-				LOG(client->worker, "Failed to decode HELLO frame");
++				DEBUG(client->worker, "Failed to decode HELLO frame");
+ 				goto disconnect;
+ 			}
+ 			prepare_agenthello(frame);
+@@ -1458,12 +1458,12 @@
+ 				n = handle_hanotify(frame);
+ 
+ 			if (n < 0) {
+-				LOG(client->worker, "Failed to decode frame: %s",
++				DEBUG(client->worker, "Failed to decode frame: %s",
+ 				    spoe_frm_err_reasons[client->status_code]);
+ 				goto disconnect;
+ 			}
+ 			else if (n == 0) {
+-				LOG(client->worker, "Ignore invalid/unknown/aborted frame");
++				DEBUG(client->worker, "Ignore invalid/unknown/aborted frame");
+ 				goto ignore_frame;
+ 			}
+ 			else if (n == 1)
+@@ -1474,11 +1474,11 @@
+ 		case SPOA_ST_DISCONNECTING:
+ 		  disconnecting:
+ 			if (handle_hadiscon(frame) < 0) {
+-				LOG(client->worker, "Failed to decode DISCONNECT frame");
++				DEBUG(client->worker, "Failed to decode DISCONNECT frame");
+ 				goto disconnect;
+ 			}
+ 			if (client->status_code != SPOE_FRM_ERR_NONE)
+-				LOG(client->worker, "<%lu> Peer closed connection: %s",
++				DEBUG(client->worker, "<%lu> Peer closed connection: %s",
+ 				    client->id, spoe_frm_err_reasons[client->status_code]);
+ 			goto disconnect;
+ 	}
