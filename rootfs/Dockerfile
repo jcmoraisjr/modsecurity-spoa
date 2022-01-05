@@ -6,6 +6,8 @@ ARG HAPROXY_MD5=5dfd403d9d33d7adb6bf2bae1ed8b10f
 ARG MODSEC_VERSION=2.9.5
 ARG MODSEC_MD5=d13cf51673b25a10f7ba9969d9b48252
 
+ADD spoa-log.patch /
+
 RUN apk add --no-cache --virtual .build-modsecurity \
         apache2-dev \
         curl \
@@ -18,6 +20,7 @@ RUN apk add --no-cache --virtual .build-modsecurity \
         linux-headers \
         make \
         openssl \
+        patch \
         pcre-dev \
         tar \
         yajl-dev \
@@ -43,7 +46,8 @@ RUN apk add --no-cache --virtual .build-modsecurity \
     && mkdir -p INSTALL/include \
     && cp standalone/*.h apache2/*.h INSTALL/include \
     && mkdir -p /usr/src/haproxy/contrib/ \
-    && git clone https://github.com/haproxy/spoa-modsecurity /usr/src/haproxy/contrib/modsecurity \ 
+    && git clone https://github.com/haproxy/spoa-modsecurity /usr/src/haproxy/contrib/modsecurity \
+    && patch -p0 /usr/src/haproxy/contrib/modsecurity/spoa.c < /spoa-log.patch \
     && cd / \
     && make -C /usr/src/haproxy/contrib/modsecurity \
         MODSEC_INC=/usr/src/modsecurity/INSTALL/include \
