@@ -55,8 +55,8 @@ RUN apk add --no-cache --virtual .build-modsecurity \
     && apk add $deps \
     && apk del .build-modsecurity
 
-ARG OWASP_MODSEC_VERSION=v3.3.0
-ARG OWASP_MODSEC_MD5=491b37397e42e6c549bf19e6e49a7dbd
+ARG OWASP_MODSEC_VERSION=v3.3.2
+ARG OWASP_MODSEC_MD5=244db30b807c56d8277010b70305efda
 
 RUN mkdir -p /etc/modsecurity/owasp-modsecurity-crs \
     && wget -qO/etc/modsecurity/modsecurity.conf https://github.com/SpiderLabs/ModSecurity/raw/v2/master/modsecurity.conf-recommended \
