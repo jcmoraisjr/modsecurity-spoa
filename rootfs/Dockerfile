@@ -1,8 +1,7 @@
 FROM alpine:3.16.0
 
-ARG HAPROXY_MAJOR=2.2
-ARG HAPROXY_VERSION=2.2.4
-ARG HAPROXY_MD5=c2717fcff503ef8574cd6395e2ca4d24
+ARG HAPROXY_MODSEC_REF=3c895f3e7dd291dba19d57ba054b277e6fb80ca4
+ARG HAPROXY_MODSEC_MD5=1cc7bcb0e8b4d1d24e92dd941682e31d
 ARG MODSEC_VERSION=2.9.5
 ARG MODSEC_MD5=d13cf51673b25a10f7ba9969d9b48252
 
@@ -21,15 +20,15 @@ RUN apk add --no-cache --virtual .build-modsecurity \
         curl-dev \
         yajl-dev\
     && curl -fsSLo /tmp/modsecurity.tar.gz https://github.com/SpiderLabs/ModSecurity/releases/download/v${MODSEC_VERSION}/modsecurity-${MODSEC_VERSION}.tar.gz \
-    && curl -fsSLo /tmp/haproxy.tar.gz https://www.haproxy.org/download/${HAPROXY_MAJOR}/src/haproxy-${HAPROXY_VERSION}.tar.gz \
+    && curl -fsSLo /tmp/haproxy-modsecurity.zip https://github.com/haproxy/spoa-modsecurity/archive/${HAPROXY_MODSEC_REF}.zip \
     && echo "$MODSEC_MD5  /tmp/modsecurity.tar.gz" | md5sum -c \
     && mkdir -p /usr/src/modsecurity \
     && tar xzf /tmp/modsecurity.tar.gz --strip-components=1 -C /usr/src/modsecurity \
     && rm /tmp/modsecurity.tar.gz \
-    && echo "$HAPROXY_MD5  /tmp/haproxy.tar.gz" | md5sum -c \
-    && mkdir -p /usr/src/haproxy \
-    && tar xzf /tmp/haproxy.tar.gz -C /usr/src/haproxy --strip-components=1 \
-    && rm /tmp/haproxy.tar.gz \
+    && echo "$HAPROXY_MODSEC_MD5  /tmp/haproxy-modsecurity.zip" | md5sum -c \
+    && unzip -d /usr/src /tmp/haproxy-modsecurity.zip \
+    && mv /usr/src/spoa-modsecurity-${HAPROXY_MODSEC_REF} /usr/src/haproxy-modsecurity \
+    && rm /tmp/haproxy-modsecurity.zip \
     && cd /usr/src/modsecurity \
     && ./configure \
         --prefix=/usr/src/modsecurity/INSTALL \
@@ -42,13 +41,13 @@ RUN apk add --no-cache --virtual .build-modsecurity \
     && mkdir -p INSTALL/include \
     && cp standalone/*.h apache2/*.h INSTALL/include \
     && cd / \
-    && make -C /usr/src/haproxy/contrib/modsecurity \
+    && make -C /usr/src/haproxy-modsecurity \
         MODSEC_INC=/usr/src/modsecurity/INSTALL/include \
         MODSEC_LIB=/usr/src/modsecurity/INSTALL/lib \
         APACHE2_INC=/usr/include/apache2 \
         APR_INC=/usr/include/apr-1 \
-    && mv /usr/src/haproxy/contrib/modsecurity/modsecurity /usr/local/bin/ \
-    && rm -rf /usr/src/haproxy /usr/src/modsecurity \
+    && mv /usr/src/haproxy-modsecurity/modsecurity /usr/local/bin/ \
+    && rm -rf /usr/src/haproxy-modsecurity /usr/src/modsecurity \
     && deps=$( \
         scanelf --needed --nobanner --format '%n#p' /usr/local/bin/modsecurity \
             | tr ',' '\n' | sed 's/^/so:/' \
