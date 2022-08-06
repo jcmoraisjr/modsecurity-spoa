@@ -60,5 +60,5 @@ docker-compose -p "$PROJECT_NAME" run client
 ci_log_group_end
 
 ci_log_group_start "INFO" "Showing logs"
-docker-compose -p "$PROJECT_NAME" logs modsecurity-spoa | grep -v "clients connected"
+docker-compose -p "$PROJECT_NAME" logs modsecurity-spoa
 ci_log_group_end
