@@ -1,9 +1,9 @@
 FROM alpine:3.16.1
 
 ARG HAPROXY_MODSEC_REF=3c895f3e7dd291dba19d57ba054b277e6fb80ca4
-ARG HAPROXY_MODSEC_MD5=1cc7bcb0e8b4d1d24e92dd941682e31d
+ARG HAPROXY_MODSEC_SHA256=645ff6fd6fe1394462bd6b82ee5430606c631b83021f8b5cd7eca2b62b427970
 ARG MODSEC_VERSION=2.9.6
-ARG MODSEC_MD5=6e5979a292b16275b93ff6fa573a49d7
+ARG MODSEC_SHA256=626a831aca92cdff73ea68a85b7f5c105d9a15365fa270fbed3139a81eaf3344
 
 ADD spoa-log.patch /
 
@@ -21,14 +21,14 @@ RUN apk add --no-cache --virtual .build-modsecurity \
         libxml2-dev \
         libevent-dev \
         curl-dev \
-        yajl-dev\
+        yajl-dev \
     && curl -fsSLo /tmp/modsecurity.tar.gz https://github.com/SpiderLabs/ModSecurity/releases/download/v${MODSEC_VERSION}/modsecurity-${MODSEC_VERSION}.tar.gz \
     && curl -fsSLo /tmp/haproxy-modsecurity.zip https://github.com/haproxy/spoa-modsecurity/archive/${HAPROXY_MODSEC_REF}.zip \
-    && echo "$MODSEC_MD5  /tmp/modsecurity.tar.gz" | md5sum -c \
+    && echo "$MODSEC_SHA256  /tmp/modsecurity.tar.gz" | sha256sum -c \
     && mkdir -p /usr/src/modsecurity \
     && tar xzf /tmp/modsecurity.tar.gz --strip-components=1 -C /usr/src/modsecurity \
     && rm /tmp/modsecurity.tar.gz \
-    && echo "$HAPROXY_MODSEC_MD5  /tmp/haproxy-modsecurity.zip" | md5sum -c \
+    && echo "$HAPROXY_MODSEC_SHA256  /tmp/haproxy-modsecurity.zip" | sha256sum -c \
     && unzip -d /usr/src /tmp/haproxy-modsecurity.zip \
     && mv /usr/src/spoa-modsecurity-${HAPROXY_MODSEC_REF} /usr/src/haproxy-modsecurity \
     && patch -p0 /usr/src/haproxy-modsecurity/spoa.c </spoa-log.patch \
@@ -60,13 +60,13 @@ RUN apk add --no-cache --virtual .build-modsecurity \
     && apk del .build-modsecurity
 
 ARG OWASP_MODSEC_VERSION=v3.3.2
-ARG OWASP_MODSEC_MD5=244db30b807c56d8277010b70305efda
+ARG OWASP_MODSEC_SHA256=56ddb33a5d0413f43157e1ea22415adf75d8b12219c43156861fd11708c8033e
 
 RUN mkdir -p /etc/modsecurity/owasp-modsecurity-crs \
     && wget -qO/etc/modsecurity/modsecurity.conf https://github.com/SpiderLabs/ModSecurity/raw/v2/master/modsecurity.conf-recommended \
     && wget -qO/etc/modsecurity/unicode.mapping https://github.com/SpiderLabs/ModSecurity/raw/v2/master/unicode.mapping \
     && wget -qO/tmp/owasp.tar.gz https://github.com/coreruleset/coreruleset/archive/${OWASP_MODSEC_VERSION}.tar.gz \
-    && echo "$OWASP_MODSEC_MD5  /tmp/owasp.tar.gz" | md5sum -c \
+    && echo "$OWASP_MODSEC_SHA256  /tmp/owasp.tar.gz" | sha256sum -c \
     && tar xzf /tmp/owasp.tar.gz --strip-components=1 -C /etc/modsecurity/owasp-modsecurity-crs \
     && rm /tmp/owasp.tar.gz \
     && find \
