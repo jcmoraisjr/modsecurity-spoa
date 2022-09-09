@@ -7,7 +7,8 @@ ARG MODSEC_SHA256=626a831aca92cdff73ea68a85b7f5c105d9a15365fa270fbed3139a81eaf33
 
 ADD spoa-log.patch /
 
-RUN apk add --no-cache --virtual .build-modsecurity \
+RUN apk upgrade --no-cache \
+ && apk add --no-cache --virtual .build-modsecurity \
         curl \
         openssl \
         patch \
@@ -56,8 +57,8 @@ RUN apk add --no-cache --virtual .build-modsecurity \
         scanelf --needed --nobanner --format '%n#p' /usr/local/bin/modsecurity \
             | tr ',' '\n' | sed 's/^/so:/' \
     ) \
-    && apk add $deps \
-    && apk del .build-modsecurity
+    && apk add --no-cache $deps tini \
+    && apk del --no-cache .build-modsecurity
 
 ARG OWASP_MODSEC_VERSION=v3.3.2
 ARG OWASP_MODSEC_SHA256=56ddb33a5d0413f43157e1ea22415adf75d8b12219c43156861fd11708c8033e
@@ -87,8 +88,6 @@ RUN mkdir -p /etc/modsecurity/owasp-modsecurity-crs \
             /etc/modsecurity/owasp-modsecurity-crs/rules \
             -type f -maxdepth 1 -name '*.conf' \
         | sort | sed 's/^/Include /' >> /etc/modsecurity/owasp-modsecurity-crs.conf
-
-RUN apk add --no-cache tini
 
 COPY . /
 
