@@ -60,8 +60,8 @@ RUN apk upgrade --no-cache \
     && apk add --no-cache $deps tini \
     && apk del --no-cache .build-modsecurity
 
-ARG OWASP_MODSEC_VERSION=v3.3.2
-ARG OWASP_MODSEC_SHA256=56ddb33a5d0413f43157e1ea22415adf75d8b12219c43156861fd11708c8033e
+ARG OWASP_MODSEC_VERSION=v3.3.4
+ARG OWASP_MODSEC_SHA256=15a84aaa041aa532905a34546b613bd3aed122e3f9814fbb5c28e1655d02b74d
 
 RUN mkdir -p /etc/modsecurity/owasp-modsecurity-crs \
     && wget -qO/etc/modsecurity/modsecurity.conf https://github.com/SpiderLabs/ModSecurity/raw/v2/master/modsecurity.conf-recommended \
