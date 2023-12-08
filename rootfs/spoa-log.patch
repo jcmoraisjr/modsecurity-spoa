@@ -1,5 +1,5 @@
---- spoa.c.orig
-+++ spoa.c
+--- spoa.c.orig	2023-12-08 13:57:56
++++ spoa.c	2023-12-08 14:06:38
 @@ -1244,7 +1244,7 @@
  {
  	struct worker *worker = arg;
@@ -9,3 +9,15 @@
  }
  
  static void
+@@ -1477,7 +1477,10 @@
+ 				LOG(client->worker, "Failed to decode DISCONNECT frame");
+ 				goto disconnect;
+ 			}
+-			if (client->status_code != SPOE_FRM_ERR_NONE)
++			if (client->status_code == SPOE_FRM_ERR_TOUT)
++				DEBUG(client->worker, "<%lu> Peer closed connection: %s",
++				      client->id, spoe_frm_err_reasons[client->status_code]);
++			else if (client->status_code != SPOE_FRM_ERR_NONE)
+ 				LOG(client->worker, "<%lu> Peer closed connection: %s",
+ 				    client->id, spoe_frm_err_reasons[client->status_code]);
+ 			goto disconnect;
