@@ -1,25 +1,17 @@
----
 name: Test
-
-#
-# Documentation:
-# https://help.github.com/en/articles/workflow-syntax-for-github-actions
-#
-
 on:
+  push:
+    branches:
+    - master
   pull_request:
-
 jobs:
-
   test:
     name: Test
     runs-on: ubuntu-latest
     steps:
-
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Run
-        run: |
-          cd test
-          ./run.sh
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Run
+      run: |
+        cd test
+        ./run.sh
