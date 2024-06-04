@@ -2,8 +2,8 @@ FROM alpine:3.20.0
 
 ARG HAPROXY_MODSEC_REF=3c895f3e7dd291dba19d57ba054b277e6fb80ca4
 ARG HAPROXY_MODSEC_SHA256=645ff6fd6fe1394462bd6b82ee5430606c631b83021f8b5cd7eca2b62b427970
-ARG MODSEC_VERSION=2.9.6
-ARG MODSEC_SHA256=626a831aca92cdff73ea68a85b7f5c105d9a15365fa270fbed3139a81eaf3344
+ARG MODSEC_VERSION=2.9.7
+ARG MODSEC_SHA256=2a28fcfccfef21581486f98d8d5fe0397499749b8380f60ec7bb1c08478e1839
 
 ADD spoa-log.patch /
 
@@ -23,7 +23,7 @@ RUN apk upgrade --no-cache \
         libevent-dev \
         curl-dev \
         yajl-dev \
-    && curl -fsSLo /tmp/modsecurity.tar.gz https://github.com/SpiderLabs/ModSecurity/releases/download/v${MODSEC_VERSION}/modsecurity-${MODSEC_VERSION}.tar.gz \
+    && curl -fsSLo /tmp/modsecurity.tar.gz https://github.com/owasp-modsecurity/ModSecurity/releases/download/v${MODSEC_VERSION}/modsecurity-${MODSEC_VERSION}.tar.gz \
     && curl -fsSLo /tmp/haproxy-modsecurity.zip https://github.com/haproxy/spoa-modsecurity/archive/${HAPROXY_MODSEC_REF}.zip \
     && echo "$MODSEC_SHA256  /tmp/modsecurity.tar.gz" | sha256sum -c \
     && mkdir -p /usr/src/modsecurity \
@@ -64,8 +64,8 @@ ARG OWASP_MODSEC_VERSION=v3.3.5
 ARG OWASP_MODSEC_SHA256=6e311e9b5c07741392a6983075101915988127d385fa786e36d83018ea0a401b
 
 RUN mkdir -p /etc/modsecurity/owasp-modsecurity-crs \
-    && wget -qO/etc/modsecurity/modsecurity.conf https://github.com/SpiderLabs/ModSecurity/raw/v2/master/modsecurity.conf-recommended \
-    && wget -qO/etc/modsecurity/unicode.mapping https://github.com/SpiderLabs/ModSecurity/raw/v2/master/unicode.mapping \
+    && wget -qO/etc/modsecurity/modsecurity.conf https://github.com/owasp-modsecurity/ModSecurity/raw/v2/master/modsecurity.conf-recommended \
+    && wget -qO/etc/modsecurity/unicode.mapping https://github.com/owasp-modsecurity/ModSecurity/raw/v2/master/unicode.mapping \
     && wget -qO/tmp/owasp.tar.gz https://github.com/coreruleset/coreruleset/archive/${OWASP_MODSEC_VERSION}.tar.gz \
     && echo "$OWASP_MODSEC_SHA256  /tmp/owasp.tar.gz" | sha256sum -c \
     && tar xzf /tmp/owasp.tar.gz --strip-components=1 -C /etc/modsecurity/owasp-modsecurity-crs \
