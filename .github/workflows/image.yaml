@@ -36,7 +36,7 @@ jobs:
         password: ${{ secrets.QUAY_TOKEN }}
     - uses: docker/setup-qemu-action@v3
     - uses: docker/setup-buildx-action@v3
-    - uses: docker/build-push-action@v5
+    - uses: docker/build-push-action@v6
       with:
         context: rootfs
         platforms: linux/amd64,linux/arm64/v8,linux/arm/v7
