@@ -2,6 +2,10 @@
 set -e
 
 PROJECT_NAME="modsec"
+COMPOSE="docker-compose"
+if ! which $COMPOSE; then
+    COMPOSE="docker compose"
+fi
 
 # Functions
 
@@ -37,7 +41,7 @@ function ci_log_group_end {
 function containers_down {
 
     ci_log_entry "INFO" "Terminating containers"
-    docker-compose -p "$PROJECT_NAME" down
+    $COMPOSE -p "$PROJECT_NAME" down
 
 }
 
@@ -48,17 +52,17 @@ trap containers_down EXIT
 # Run
 
 ci_log_group_start "INFO" "Build containers"
-docker-compose -p "$PROJECT_NAME" build
+$COMPOSE -p "$PROJECT_NAME" build
 ci_log_group_end
 
 ci_log_group_start "INFO" "Starting containers"
-docker-compose -p "$PROJECT_NAME" up --force-recreate --detach haproxy
+$COMPOSE -p "$PROJECT_NAME" up --force-recreate --detach haproxy
 ci_log_group_end
 
 ci_log_group_start "INFO" "Running tests"
-docker-compose -p "$PROJECT_NAME" run client
+$COMPOSE -p "$PROJECT_NAME" run client
 ci_log_group_end
 
 ci_log_group_start "INFO" "Showing logs"
-docker-compose -p "$PROJECT_NAME" logs modsecurity-spoa
+$COMPOSE -p "$PROJECT_NAME" logs modsecurity-spoa
 ci_log_group_end
