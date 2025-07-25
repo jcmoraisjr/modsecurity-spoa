@@ -20,3 +20,12 @@
  }
  
  static void
+@@ -1478,7 +1478,7 @@
+ 				goto disconnect;
+ 			}
+ 			if (client->status_code != SPOE_FRM_ERR_NONE)
+-				LOG(client->worker, "<%lu> Peer closed connection: %s",
++				DEBUG(client->worker, "<%lu> Peer closed connection: %s",
+ 				    client->id, spoe_frm_err_reasons[client->status_code]);
+ 			goto disconnect;
+ 	}
