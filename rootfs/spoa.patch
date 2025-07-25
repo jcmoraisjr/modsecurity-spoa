@@ -1,0 +1,22 @@
+--- Makefile.orig
++++ Makefile
+@@ -35,7 +35,7 @@
+
+ CFLAGS  += -g -Wall -pthread
+ INCS += -Iinclude -I$(MODSEC_INC) -I$(APACHE2_INC) -I$(APR_INC) -I$(LIBXML_INC) -I$(EVENT_INC)
+-LIBS += -lpthread  $(EVENT_LIB) -levent_pthreads -lcurl -lapr-1 -laprutil-1 -lxml2 -lpcre -lyajl
++LIBS += -lpthread  $(EVENT_LIB) -levent_pthreads -lcurl -lapr-1 -laprutil-1 -lxml2 -lpcre -lpcre2-8 -lyajl
+
+ OBJS = spoa.o modsec_wrapper.o
+
+--- spoa.c.orig
++++ spoa.c
+@@ -1244,7 +1244,7 @@
+ {
+ 	struct worker *worker = arg;
+ 
+-	LOG(worker, "%u clients connected", worker->nbclients);
++	DEBUG(worker, "%u clients connected", worker->nbclients);
+ }
+ 
+ static void
